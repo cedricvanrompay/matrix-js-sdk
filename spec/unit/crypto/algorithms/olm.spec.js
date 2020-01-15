@@ -42,29 +42,7 @@ async function setupSession(initiator, opponent) {
     return sid;
 }
 
-describe("OlmDevice", () => {
-    if (!global.Olm) {
-        logger.warn('Not running megolm unit tests: libolm not present');
-        return;
-    }
-
-    beforeAll(function() {
-        return global.Olm.init();
-    });
-
-    let olmDevice;
-
-    beforeEach(async function() {
-        olmDevice = makeOlmDevice();
-        await olmDevice.init();
-    });
-
-    it('exports picked account and olm sessions', async function() {
-        console.log('EXPORT RESULT:', await olmDevice.export());
-    });
-});
-
-describe("OlmDecryption", function() {
+describe("OlmDevice", function() {
     if (!global.Olm) {
         logger.warn('Not running megolm unit tests: libolm not present');
         return;
@@ -102,6 +80,12 @@ describe("OlmDecryption", function() {
             expect(result.payload).toEqual(
                 "The olm or proteus is an aquatic salamander in the family Proteidae",
             );
+        });
+
+        it('exports picked account and olm sessions', async function() {
+            await setupSession(aliceOlmDevice, bobOlmDevice);
+
+            console.log('EXPORT RESULT:', await aliceOlmDevice.export());
         });
 
         it("creates only one session at a time", async function() {
